@@ -17,42 +17,42 @@ definition(
 )
 
 preferences {
-	section("Use this switch as the trigger...") {
-		input "trigger", "capability.switch", title: "Switch", multiple: false, required: true
-	}
-	section("Control this device..."){
-		input "outlet", "capability.switch", title: "Outlet", multiple: false, required: true
-	}
-	section("Turn off after this many minutes..."){
+    section("Use this switch as the trigger...") {
+        input "trigger", "capability.switch", title: "Switch", multiple: false, required: true
+    }
+    section("Control this device..."){
+        input "outlet", "capability.switch", title: "Outlet", multiple: false, required: true
+    }
+    section("Turn off after this many minutes..."){
         input "minutes", "number", title: "Minutes", required: true
-	}
+    }
 }
 
 def installed() {
-	log.debug "Installed with settings: ${settings}"
-	subscribe(trigger, "switch.on", onHandler)
+    log.debug "Installed with settings: ${settings}"
+    subscribe(trigger, "switch.on", onHandler)
     subscribe(trigger, "switch.off", offHandler)
 }
 
 def updated(settings) {
-	log.debug "Updated with settings: ${settings}"
-	unsubscribe()
+    log.debug "Updated with settings: ${settings}"
+    unsubscribe()
     subscribe(trigger, "switch.on", onHandler)
     subscribe(trigger, "switch.off", offHandler)
 }
 
 def turnOffSwitch() {
-	outlet.off()
+    outlet.off()
     trigger.off()
 }
 
 def onHandler(evt) {
-	outlet.on()
-	def delay = minutes * 60
-	runIn(delay, turnOffSwitch)
+    outlet.on()
+    def delay = minutes * 60
+    runIn(delay, turnOffSwitch)
 }
 
 def offHandler(evt) {
-	outlet.off()
+    outlet.off()
 }
 
